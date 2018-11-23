@@ -1,0 +1,40 @@
+{
+    "name": "dakalab/division-code",
+    "description": "Administrative division codes of China",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hyper Jiang",
+            "email": "hyper@dakalab.com",
+            "homepage": "http://dakalab.com"
+        }
+    ],
+    "require": {
+        "php": ">=7"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7",
+        "friendsofphp/php-cs-fixer": "^2",
+        "symfony/dom-crawler": "^4.1",
+        "symfony/css-selector": "^4.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dakalab\\DivisionCode\\": "src/DivisionCode/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Dakalab\\DivisionCode\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": [
+            "@phpunit",
+            "@phpcs"
+        ],
+        "phpunit": "phpunit --color=always --verbose",
+        "phpcs": "php-cs-fixer fix -v --diff --dry-run"
+    }
+}
