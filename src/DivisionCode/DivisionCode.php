@@ -44,6 +44,7 @@ class DivisionCode
         if (!$this->validate($code)) {
             throw new \InvalidArgumentException('Invalid code');
         }
+
         return isset($this->codes[$code]) ? $this->codes[$code] : '';
     }
 
@@ -56,6 +57,7 @@ class DivisionCode
     public function getProvince($code): string
     {
         $provinceCode = substr($code, 0, 2) . '0000';
+
         return $this->get($provinceCode);
     }
 
@@ -72,6 +74,7 @@ class DivisionCode
         if ($provinceCode != $cityCode) {
             return $this->get($cityCode);
         }
+
         return '';
     }
 
@@ -86,6 +89,7 @@ class DivisionCode
         if (substr($code, 4, 2) != '00') {
             return $this->get($code);
         }
+
         return '';
     }
 

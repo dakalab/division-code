@@ -45,6 +45,7 @@ class Upgrader extends DivisionCode
             $td = (new Crawler($tr))->filter('td');
             $codes[$td->getNode(1)->nodeValue] = $td->getNode(2)->nodeValue;
         }
+
         return $codes;
     }
 
@@ -55,6 +56,7 @@ class Upgrader extends DivisionCode
         $content .= 'return ';
         $content .= var_export($codes, true);
         $content .= ";\n";
+
         return file_put_contents($this->getCodesFile(), $content);
     }
 }
