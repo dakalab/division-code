@@ -4,11 +4,11 @@ namespace Dakalab\DivisionCode;
 
 class DivisionCode
 {
-    public $codes = [];
+    public static $codes = [];
 
     public function __construct()
     {
-        $this->codes = require_once $this->getCodesFile();
+        self::$codes = require_once $this->getCodesFile();
     }
 
     /**
@@ -45,7 +45,7 @@ class DivisionCode
             throw new \InvalidArgumentException('Invalid code');
         }
 
-        return isset($this->codes[$code]) ? $this->codes[$code] : '';
+        return isset(self::$codes[$code]) ? self::$codes[$code] : '';
     }
 
     /**

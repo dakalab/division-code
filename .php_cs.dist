@@ -55,7 +55,7 @@ $finder = PhpCsFixer\Finder::create()
     ->name('*.php')
     ->in(__DIR__ . '/src')
     ->in(__DIR__ . '/tests')
-    ->exclude('codes.php');
+    ->notName('codes.php');
 
 return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
