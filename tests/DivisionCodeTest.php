@@ -26,6 +26,12 @@ class DivisionCodeTest extends TestCase
         $this->assertContains('codes.php', $res);
     }
 
+    public function testGetCodes()
+    {
+        $codes = $this->divisionCode->getCodes();
+        $this->assertEquals('北京市', $codes['110000']);
+    }
+
     /**
      * @dataProvider getProvider
      */

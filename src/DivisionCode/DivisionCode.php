@@ -8,7 +8,7 @@ class DivisionCode
 
     public function __construct()
     {
-        self::$codes = require_once $this->getCodesFile();
+        $this->loadCodes();
     }
 
     /**
@@ -19,6 +19,26 @@ class DivisionCode
     public function getCodesFile(): string
     {
         return __DIR__ . DIRECTORY_SEPARATOR . 'codes.php';
+    }
+
+    /**
+     * Load codes
+     *
+     * @return void
+     */
+    protected function loadCodes()
+    {
+        self::$codes = require_once $this->getCodesFile();
+    }
+
+    /**
+     * Get codes
+     *
+     * @return array
+     */
+    public function getCodes(): array
+    {
+        return self::$codes;
     }
 
     /**
