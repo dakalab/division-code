@@ -28,7 +28,7 @@ class DivisionCode
      */
     protected function loadCodes()
     {
-        self::$codes = require_once $this->getCodesFile();
+        self::$codes = require $this->getCodesFile();
     }
 
     /**
