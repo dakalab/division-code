@@ -35,6 +35,6 @@
             "@phpcs"
         ],
         "phpunit": "phpunit --color=always --verbose",
-        "phpcs": "php-cs-fixer fix -v --diff --dry-run"
+        "phpcs": "php-cs-fixer fix -v --diff"
     }
 }

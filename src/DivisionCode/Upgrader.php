@@ -13,7 +13,12 @@ class Upgrader extends DivisionCode
 {
     protected function getListURL(): string
     {
-        return 'http://www.mca.gov.cn/article/sj/xzqh/' . date('Y');
+        $year = date('Y');
+        if (date('n') < 3) {
+            $year--;
+        }
+
+        return 'http://www.mca.gov.cn/article/sj/xzqh/' . $year;
     }
 
     protected function getLatestCodesURL(): string
