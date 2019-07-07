@@ -26,12 +26,6 @@ class DivisionCodeTest extends TestCase
         $this->assertContains('codes.php', $res);
     }
 
-    public function testGetCodes()
-    {
-        $codes = $this->divisionCode->getCodes();
-        $this->assertEquals('北京市', $codes['110000']);
-    }
-
     /**
      * @dataProvider getProvider
      */
@@ -42,6 +36,20 @@ class DivisionCodeTest extends TestCase
         }
         $res = $this->divisionCode->get($actual);
         $this->assertEquals($expected, $res);
+    }
+
+    /**
+     * @dataProvider getProvider
+     */
+    public function testGetWithoutSQLite($actual, $expected, $expectError): void
+    {
+        if ($expectError) {
+            $this->expectException(\InvalidArgumentException::class);
+        }
+        $this->divisionCode->useSQLite(false);
+        $res = $this->divisionCode->get($actual);
+        $this->assertEquals($expected, $res);
+        $this->divisionCode->useSQLite(true);
     }
 
     public function getProvider(): array

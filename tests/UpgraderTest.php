@@ -16,6 +16,6 @@ class UpgraderTest extends TestCase
     {
         $upgrader = new Upgrader;
         $res = $upgrader->upgrade();
-        $this->assertGreaterThan(0, $res);
+        $this->assertTrue($res);
     }
 }

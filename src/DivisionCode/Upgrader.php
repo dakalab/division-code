@@ -32,6 +32,11 @@ class Upgrader extends DivisionCode
         return 'http://www.mca.gov.cn' . $crawler->getNode(0)->getAttribute('href');
     }
 
+    public static function trimSpecialCharacters($str): string
+    {
+        return trim(str_replace([chr(194) . chr(160), chr(32)], '', $str));
+    }
+
     public function getCodes(): array
     {
         $html = file_get_contents($this->getLatestCodesURL());
@@ -48,7 +53,9 @@ class Upgrader extends DivisionCode
         $codes = [];
         foreach ($crawler as $tr) {
             $td = (new Crawler($tr))->filter('td');
-            $codes[$td->getNode(1)->nodeValue] = $td->getNode(2)->nodeValue;
+            $k = self::trimSpecialCharacters($td->getNode(1)->nodeValue);
+            $v = self::trimSpecialCharacters($td->getNode(2)->nodeValue);
+            $codes[$k] = $v;
         }
 
         return $codes;
@@ -62,6 +69,15 @@ class Upgrader extends DivisionCode
         $content .= var_export($codes, true);
         $content .= ";\n";
 
-        return file_put_contents($this->getCodesFile(), $content);
+        file_put_contents($this->getCodesFile(), $content);
+
+        if ($this->supportSQLite()) {
+            $this->db->exec('CREATE TABLE IF NOT EXISTS division_codes (code TEXT PRIMARY KEY, name TEXT)');
+            foreach ($codes as $k => $v) {
+                $this->db->exec("REPLACE INTO `division_codes` (`code`, `name`) VALUES ('$k', '$v')");
+            }
+        }
+
+        return true;
     }
 }
