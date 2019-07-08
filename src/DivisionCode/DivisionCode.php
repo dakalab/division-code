@@ -123,7 +123,7 @@ class DivisionCode
         if ($this->supportSQLite()) {
             $sql = sprintf("SELECT name FROM division_codes WHERE code = '%s'", $code);
 
-            return $this->db->querySingle($sql);
+            return (string) $this->db->querySingle($sql);
         }
 
         return isset(self::$codes[$code]) ? self::$codes[$code] : '';
