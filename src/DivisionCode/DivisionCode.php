@@ -84,6 +84,19 @@ class DivisionCode
     }
 
     /**
+     * Get all the codes
+     *
+     * @return array
+     */
+    public function getCodes(): array
+    {
+        if (empty(self::$codes)) {
+            $this->loadCodes();
+        }
+        return self::$codes;
+    }
+
+    /**
      * Validate the code, should be a 6-digit number
      *
      * @param  string|int $code
