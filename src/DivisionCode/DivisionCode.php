@@ -93,6 +93,7 @@ class DivisionCode
         if (empty(self::$codes)) {
             $this->loadCodes();
         }
+
         return self::$codes;
     }
 
@@ -183,5 +184,44 @@ class DivisionCode
     public function getAddress($code): string
     {
         return $this->getProvince($code) . $this->getCity($code) . $this->getCounty($code);
+    }
+
+    /**
+     * Get the total number of codes
+     *
+     * @return int
+     */
+    public function count(): int
+    {
+        if ($this->supportSQLite()) {
+            $sql = 'SELECT COUNT(*) FROM division_codes';
+
+            return (int) $this->db->querySingle($sql);
+        }
+
+        return count(self::$codes);
+    }
+
+    /**
+     * Get a slice of division codes
+     *
+     * @param  int     $offset
+     * @param  int     $limit
+     * @return array
+     */
+    public function getSlice($offset = 0, $limit = 1): array
+    {
+        if ($this->supportSQLite()) {
+            $sql = 'SELECT code, name FROM division_codes LIMIT %d OFFSET %d';
+            $res = $this->db->query(sprintf($sql, $limit, $offset));
+            $arr = [];
+            while ($row = $res->fetchArray()) {
+                $arr[$row['code']] = $row['name'];
+            }
+
+            return $arr;
+        }
+
+        return array_slice(self::$codes, $offset, $limit, true);
     }
 }

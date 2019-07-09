@@ -83,4 +83,37 @@ class DivisionCodeTest extends TestCase
             ['440100', '广东省广州市'],
         ];
     }
+
+    public function testCount()
+    {
+        $this->divisionCode->useSQLite(false);
+        $c1 = $this->divisionCode->count();
+
+        $this->divisionCode->useSQLite(true);
+        $c2 = $this->divisionCode->count();
+
+        $this->assertEquals($c1, $c2);
+    }
+
+    /**
+     * @dataProvider getSliceProvider
+     */
+    public function testGetSlice($useSQLite, $offset, $limit, $expected): void
+    {
+        $this->divisionCode->useSQLite($useSQLite);
+        $res = $this->divisionCode->getSlice($offset, $limit);
+        $this->assertEquals($expected, count($res));
+    }
+
+    public function getSliceProvider(): array
+    {
+        return [
+            [true, 0, 1, 1],
+            [true, 100, 200, 200],
+            [true, 1000000, 10, 0],
+            [false, 0, 1, 1],
+            [false, 100, 200, 200],
+            [false, 1000000, 10, 0],
+        ];
+    }
 }
