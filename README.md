@@ -25,6 +25,10 @@ use Dakalab\DivisionCode\DivisionCode;
 
 $divisionCode = new DivisionCode;
 $res = $divisionCode->get('110000'); // 北京市
+
+// Get all the provinces
+$provinces = $divisionCode->getAllProvinces();
+print_r($provinces);
 ```
 
 ## Upgrade

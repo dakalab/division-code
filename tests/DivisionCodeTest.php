@@ -122,6 +122,7 @@ class DivisionCodeTest extends TestCase
      */
     public function testGetAllProvinces($useSQLite, $includeGAT, $expected): void
     {
+        $this->divisionCode->useSQLite($useSQLite);
         $provinces = $this->divisionCode->getAllProvinces($includeGAT);
         $this->assertEquals($expected, count($provinces));
     }

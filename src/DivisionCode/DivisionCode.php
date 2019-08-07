@@ -252,7 +252,7 @@ class DivisionCode
             return $arr;
         }
 
-        return array_filter(self::$codes, function ($k) {
+        return array_filter(self::$codes, function ($k) use ($includeGAT) {
             if (!$includeGAT) {
                 return substr($k, 2) == '0000' && $k < '710000' ;
             }
