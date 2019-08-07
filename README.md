@@ -29,6 +29,16 @@ $res = $divisionCode->get('110000'); // 北京市
 // Get all the provinces
 $provinces = $divisionCode->getAllProvinces();
 print_r($provinces);
+
+// Get all the cities in the specified province
+$province = '110000';
+$cities = $divisionCode->getCitiesInProvince($province);
+print_r($cities);
+
+// Get all the counties in the specified city
+$city = '445200';
+$counties = $divisionCode->getCountiesInCity($city);
+print_r($counties);
 ```
 
 ## Upgrade

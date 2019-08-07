@@ -11,6 +11,11 @@ class DivisionCode
      */
     public static $codes = [];
 
+    /**
+     * Municipalities in China includes Beijing, Tianjin, Shanghai, Chongqing
+     */
+    const MUNICIPALITIES = ['110000', '120000', '310000', '500000'];
+
     protected $disableSQLite = false;
 
     protected $db;
@@ -231,7 +236,7 @@ class DivisionCode
     }
 
     /**
-     * Get all the provinces
+     * Get all the provinces including municipalities and autonomous regions
      *
      * @param  bool $includeGAT include Hong Kong, Macao and Taiwan? exclude them by default
      * @return array
@@ -258,6 +263,77 @@ class DivisionCode
             }
 
             return substr($k, 2) == '0000';
+        }, ARRAY_FILTER_USE_KEY);
+    }
+
+    /**
+     * Get all the cities in the specified province
+     * Municipalities do not have cities so will return the counties(districts) instead
+     *
+     * @param  string $province
+     * @return array
+     */
+    public function getCitiesInProvince($province): array
+    {
+        // check if it is really a province, return empty array if it is not
+        if (substr($province, 2) != '0000') {
+            return [];
+        }
+
+        $prefix = substr($province, 0, 2);
+
+        if ($this->supportSQLite()) {
+            if (in_array($province, self::MUNICIPALITIES)) {
+                $sql = "SELECT code, name FROM division_codes WHERE code LIKE '$prefix%' AND code != '$province'";
+            } else {
+                $sql = "SELECT code, name FROM division_codes WHERE code LIKE '$prefix%00' AND code != '$province'";
+            }
+            $res = $this->db->query($sql);
+            $arr = [];
+            while ($row = $res->fetchArray()) {
+                $arr[$row['code']] = $row['name'];
+            }
+
+            return $arr;
+        }
+
+        return array_filter(self::$codes, function ($k) use ($province, $prefix) {
+            if (in_array($province, self::MUNICIPALITIES)) {
+                return substr($k, 0, 2) == $prefix && $k != $province;
+            }
+
+            return substr($k, 0, 2) == $prefix && $k != $province && substr($k, 4) == '00';
+        }, ARRAY_FILTER_USE_KEY);
+    }
+
+    /**
+     * Get all the counties in the specified city
+     *
+     * @param  string $city
+     * @return array
+     */
+    public function getCountiesInCity($city): array
+    {
+        // check if it is really a city, return empty array if it is not
+        if (substr($city, 4) != '00') {
+            return [];
+        }
+
+        $prefix = substr($city, 0, 4);
+
+        if ($this->supportSQLite()) {
+            $sql = "SELECT code, name FROM division_codes WHERE code LIKE '$prefix%' AND code != '$city'";
+            $res = $this->db->query($sql);
+            $arr = [];
+            while ($row = $res->fetchArray()) {
+                $arr[$row['code']] = $row['name'];
+            }
+
+            return $arr;
+        }
+
+        return array_filter(self::$codes, function ($k) use ($city, $prefix) {
+            return substr($k, 0, 4) == $prefix && $k != $city;
         }, ARRAY_FILTER_USE_KEY);
     }
 }

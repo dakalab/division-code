@@ -118,7 +118,7 @@ class DivisionCodeTest extends TestCase
     }
 
     /**
-     * @dataProvider ggetAllProvincesProvider
+     * @dataProvider getAllProvincesProvider
      */
     public function testGetAllProvinces($useSQLite, $includeGAT, $expected): void
     {
@@ -127,13 +127,67 @@ class DivisionCodeTest extends TestCase
         $this->assertEquals($expected, count($provinces));
     }
 
-    public function ggetAllProvincesProvider(): array
+    public function getAllProvincesProvider(): array
     {
         return [
             [true, false, 31],
             [true, true, 34],
             [false, false, 31],
             [false, true, 34],
+        ];
+    }
+
+    /**
+     * @dataProvider getCitiesInProvinceProvider
+     */
+    public function testGetCitiesInProvince($useSQLite, $province, $expected): void
+    {
+        $this->divisionCode->useSQLite($useSQLite);
+        $cities = $this->divisionCode->getCitiesInProvince($province);
+        $this->assertEquals($expected, count($cities));
+    }
+
+    public function getCitiesInProvinceProvider(): array
+    {
+        return [
+            [true, '110000', 16],
+            [true, '710000', 0],
+            [true, '630000', 8],
+            [true, '150000', 12],
+            [true, '440000', 21],
+            [true, '445200', 0], // not a province
+            [false, '110000', 16],
+            [false, '710000', 0],
+            [false, '630000', 8],
+            [false, '150000', 12],
+            [false, '440000', 21],
+            [false, '445200', 0], // not a province
+        ];
+    }
+
+    /**
+     * @dataProvider getCountiesInCityProvider
+     */
+    public function testGetCountiesInCity($useSQLite, $city, $expected): void
+    {
+        $this->divisionCode->useSQLite($useSQLite);
+        $counties = $this->divisionCode->getCountiesInCity($city);
+        $this->assertEquals($expected, count($counties));
+    }
+
+    public function getCountiesInCityProvider(): array
+    {
+        return [
+            [true, '110000', 0],
+            [true, '445200', 5],
+            [true, '150100', 9],
+            [true, '630100', 7],
+            [true, '110101', 0], // not a city
+            [false, '110000', 0],
+            [false, '445200', 5],
+            [false, '150100', 9],
+            [false, '630100', 7],
+            [false, '110101', 0], // not a city
         ];
     }
 }
