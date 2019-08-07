@@ -116,4 +116,23 @@ class DivisionCodeTest extends TestCase
             [false, 1000000, 10, 0],
         ];
     }
+
+    /**
+     * @dataProvider ggetAllProvincesProvider
+     */
+    public function testGetAllProvinces($useSQLite, $includeGAT, $expected): void
+    {
+        $provinces = $this->divisionCode->getAllProvinces($includeGAT);
+        $this->assertEquals($expected, count($provinces));
+    }
+
+    public function ggetAllProvincesProvider(): array
+    {
+        return [
+            [true, false, 31],
+            [true, true, 34],
+            [false, false, 31],
+            [false, true, 34],
+        ];
+    }
 }

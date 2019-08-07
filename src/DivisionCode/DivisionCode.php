@@ -4,6 +4,11 @@ namespace Dakalab\DivisionCode;
 
 class DivisionCode
 {
+    /**
+     * Static array to cache [code => name] of divisions, only used when sqlite is disabled
+     *
+     * @var array
+     */
     public static $codes = [];
 
     protected $disableSQLite = false;
@@ -223,5 +228,36 @@ class DivisionCode
         }
 
         return array_slice(self::$codes, $offset, $limit, true);
+    }
+
+    /**
+     * Get all the provinces
+     *
+     * @param  bool $includeGAT include Hong Kong, Macao and Taiwan? exclude them by default
+     * @return array
+     */
+    public function getAllProvinces($includeGAT = false): array
+    {
+        if ($this->supportSQLite()) {
+            $sql = 'SELECT code, name FROM division_codes WHERE code LIKE "%0000"';
+            if (!$includeGAT) {
+                $sql .= ' AND code < "710000"';
+            }
+            $res = $this->db->query($sql);
+            $arr = [];
+            while ($row = $res->fetchArray()) {
+                $arr[$row['code']] = $row['name'];
+            }
+
+            return $arr;
+        }
+
+        return array_filter(self::$codes, function ($k) {
+            if (!$includeGAT) {
+                return substr($k, 2) == '0000' && $k < '710000' ;
+            }
+
+            return substr($k, 2) == '0000';
+        }, ARRAY_FILTER_USE_KEY);
     }
 }
