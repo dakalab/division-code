@@ -190,4 +190,50 @@ class DivisionCodeTest extends TestCase
             [false, '110101', 0], // not a city
         ];
     }
+
+    /**
+     * @dataProvider getProvinceCodeByNameProvider
+     */
+    public function testGetProvinceCodeByName($useSQLite, $name, $expected): void
+    {
+        $this->divisionCode->useSQLite($useSQLite);
+        $res = $this->divisionCode->getProvinceCodeByName($name);
+        $this->assertEquals($expected, $res);
+    }
+
+    public function getProvinceCodeByNameProvider(): array
+    {
+        return [
+            [true, '北京市', '110000'],
+            [true, '', ''],
+            [true, '未知的地方', ''],
+            [false, '北京市', '110000'],
+            [false, '', ''],
+            [false, '未知的地方', ''],
+        ];
+    }
+
+    /**
+     * @dataProvider getCitiesByProvinceNameProvider
+     */
+    public function testgetCitiesByProvinceName($useSQLite, $province, $expected): void
+    {
+        $this->divisionCode->useSQLite($useSQLite);
+        $cities = $this->divisionCode->getCitiesByProvinceName($province);
+        $this->assertEquals($expected, count($cities));
+    }
+
+    public function getCitiesByProvinceNameProvider(): array
+    {
+        return [
+            [true, '北京市', 16],
+            [true, '台湾省', 0],
+            [true, '广东省', 21],
+            [true, '广州市', 0], // not a province
+            [false, '北京市', 16],
+            [false, '台湾省', 0],
+            [false, '广东省', 21],
+            [false, '广州市', 0], // not a province
+        ];
+    }
 }

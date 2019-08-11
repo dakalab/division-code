@@ -39,6 +39,11 @@ print_r($cities);
 $city = '445200';
 $counties = $divisionCode->getCountiesInCity($city);
 print_r($counties);
+
+// Get all the cities in the specified province by the province name
+$province = '广东省';
+$cities = $divisionCode->getCitiesByProvinceName($province);
+print_r($cities);
 ```
 
 ## Upgrade

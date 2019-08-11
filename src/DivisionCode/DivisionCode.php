@@ -238,7 +238,7 @@ class DivisionCode
     /**
      * Get all the provinces including municipalities and autonomous regions
      *
-     * @param  bool $includeGAT include Hong Kong, Macao and Taiwan? exclude them by default
+     * @param  bool    $includeGAT include Hong Kong, Macao and Taiwan? exclude them by default
      * @return array
      */
     public function getAllProvinces($includeGAT = false): array
@@ -259,7 +259,7 @@ class DivisionCode
 
         return array_filter(self::$codes, function ($k) use ($includeGAT) {
             if (!$includeGAT) {
-                return substr($k, 2) == '0000' && $k < '710000' ;
+                return substr($k, 2) == '0000' && $k < '710000';
             }
 
             return substr($k, 2) == '0000';
@@ -270,7 +270,7 @@ class DivisionCode
      * Get all the cities in the specified province
      * Municipalities do not have cities so will return the counties(districts) instead
      *
-     * @param  string $province
+     * @param  string  $province province code
      * @return array
      */
     public function getCitiesInProvince($province): array
@@ -309,7 +309,7 @@ class DivisionCode
     /**
      * Get all the counties in the specified city
      *
-     * @param  string $city
+     * @param  string  $city city code
      * @return array
      */
     public function getCountiesInCity($city): array
@@ -335,5 +335,35 @@ class DivisionCode
         return array_filter(self::$codes, function ($k) use ($city, $prefix) {
             return substr($k, 0, 4) == $prefix && $k != $city;
         }, ARRAY_FILTER_USE_KEY);
+    }
+
+    /**
+     * Get province code by its name
+     *
+     * @param  string   $name
+     * @return string
+     */
+    public function getProvinceCodeByName($name): string
+    {
+        if ($this->supportSQLite()) {
+            $sql = "SELECT code FROM division_codes WHERE name = '$name'";
+
+            return (string) $this->db->querySingle($sql);
+        }
+
+        return array_search($name, self::$codes);
+    }
+
+    /**
+     * Get all the cities in the specified province by the province name
+     *
+     * @param  string  $provinceName
+     * @return array
+     */
+    public function getCitiesByProvinceName($provinceName): array
+    {
+        $code = $this->getProvinceCodeByName($provinceName);
+
+        return $this->getCitiesInProvince($code);
     }
 }
