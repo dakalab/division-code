@@ -40,14 +40,20 @@ class Upgrader extends DivisionCode
     public function getCodes(): array
     {
         $html = file_get_contents($this->getLatestCodesURL());
+        if (empty($html)) {
+            throw new \LengthException('Fail to fetch html content');
+        }
 
         // need to redirect
-        if (preg_match('/http:\/\/www\.mca\.gov\.cn\/article\/sj\/xzqh\/.+\.html/U', $html, $m)) {
+        if (preg_match('/http:\/\/www\.mca\.gov\.cn\/article\/sj\/tjyb\/qgsj\/.+\.html/U', $html, $m)) {
             $html = file_get_contents($m[0]);
         }
 
-        $crawler = new Crawler($html);
+        if (empty($html)) {
+            throw new \LengthException('Fail to fetch html content');
+        }
 
+        $crawler = new Crawler($html);
         $crawler = $crawler->filterXPath('//tr[@height=19]');
 
         $codes = [];
@@ -56,6 +62,10 @@ class Upgrader extends DivisionCode
             $k = self::trimSpecialCharacters($td->getNode(1)->nodeValue);
             $v = self::trimSpecialCharacters($td->getNode(2)->nodeValue);
             $codes[$k] = $v;
+        }
+
+        if (empty($codes)) {
+            throw new \LengthException('Fail to parse codes');
         }
 
         return $codes;
