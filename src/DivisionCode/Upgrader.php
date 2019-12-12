@@ -82,9 +82,10 @@ class Upgrader extends DivisionCode
         file_put_contents($this->getCodesFile(), $content);
 
         if ($this->supportSQLite()) {
-            $this->db->exec('CREATE TABLE IF NOT EXISTS division_codes (code TEXT PRIMARY KEY, name TEXT)');
+            $this->db->exec('DROP TABLE IF EXISTS division_codes');
+            $this->db->exec('CREATE TABLE division_codes (code TEXT PRIMARY KEY, name TEXT)');
             foreach ($codes as $k => $v) {
-                $this->db->exec("REPLACE INTO `division_codes` (`code`, `name`) VALUES ('$k', '$v')");
+                $this->db->exec("INSERT INTO `division_codes` (`code`, `name`) VALUES ('$k', '$v')");
             }
         }
 
