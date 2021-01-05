@@ -45,7 +45,7 @@ class Upgrader extends DivisionCode
         }
 
         // need to redirect
-        if (preg_match('/http:\/\/www\.mca\.gov\.cn(\/)+article\/sj\/xzqh\/.+\.html/U', $html, $m)) {
+        if (preg_match('/http:\/\/(preview\.)?www\.mca\.gov\.cn(\/)+article\/sj\/xzqh\/.+\.html/U', $html, $m)) {
             $html = file_get_contents($m[0]);
         } else {
             throw new \LengthException('Fail to parse redirect link');
